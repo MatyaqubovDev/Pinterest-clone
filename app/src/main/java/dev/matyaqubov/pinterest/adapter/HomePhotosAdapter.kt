@@ -10,9 +10,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import dev.matyaqubov.pinterest.R
-import dev.matyaqubov.pinterest.model.Filter
-import dev.matyaqubov.pinterest.service.photosModels.PhotosResponse
-import dev.matyaqubov.pinterest.service.photosModels.PhotosResponseItem
+import dev.matyaqubov.pinterest.service.model.PhotosResponseItem
 
 class HomePhotosAdapter(val lists: ArrayList<PhotosResponseItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

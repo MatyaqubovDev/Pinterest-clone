@@ -1,4 +1,4 @@
-package dev.matyaqubov.pinterest.service.photosModels
+package dev.matyaqubov.pinterest.service.model
 
 import com.google.gson.annotations.SerializedName
 

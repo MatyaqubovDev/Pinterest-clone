@@ -14,7 +14,7 @@ import dev.matyaqubov.pinterest.adapter.FilterAdapter
 import dev.matyaqubov.pinterest.adapter.HomePhotosAdapter
 import dev.matyaqubov.pinterest.model.Filter
 import dev.matyaqubov.pinterest.service.RetrofitHttp
-import dev.matyaqubov.pinterest.service.photosModels.PhotosResponseItem
+import dev.matyaqubov.pinterest.service.model.PhotosResponseItem
 import dev.matyaqubov.pinterest.ui.helper.ProgressDialog
 import retrofit2.Call
 import retrofit2.Callback
@@ -30,10 +30,7 @@ class HomeFragment : Fragment() {
     private lateinit var adapter:HomePhotosAdapter
     private lateinit var manager: StaggeredGridLayoutManager
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         return initViews(inflater.inflate(R.layout.fragment_home, container, false))
     }
