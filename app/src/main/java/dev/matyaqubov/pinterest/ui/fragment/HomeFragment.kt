@@ -12,9 +12,9 @@ import com.example.pinterestclone.helper.EndlessRecyclerViewScrollListener
 import dev.matyaqubov.pinterest.R
 import dev.matyaqubov.pinterest.adapter.FilterAdapter
 import dev.matyaqubov.pinterest.adapter.HomePhotosAdapter
-import dev.matyaqubov.pinterest.model.Filter
 import dev.matyaqubov.pinterest.service.RetrofitHttp
 import dev.matyaqubov.pinterest.service.model.PhotosResponseItem
+import dev.matyaqubov.pinterest.service.model.TopicItem
 import dev.matyaqubov.pinterest.ui.helper.ProgressDialog
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,27 +24,30 @@ import retrofit2.Response
 class HomeFragment : Fragment() {
     private lateinit var rv_filter: RecyclerView
     private lateinit var rv_home_main: RecyclerView
-    private lateinit var filters: ArrayList<Filter>
+    private lateinit var filters: ArrayList<TopicItem>
     var list = ArrayList<PhotosResponseItem>()
     var page = 0
-    private lateinit var adapter:HomePhotosAdapter
+    private lateinit var adapterHome: HomePhotosAdapter
     private lateinit var manager: StaggeredGridLayoutManager
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         return initViews(inflater.inflate(R.layout.fragment_home, container, false))
     }
+
     private fun initViews(view: View): View {
         prepareFilters()
         rv_filter = view.findViewById(R.id.rv_filter)
+
         rv_filter.adapter = FilterAdapter(filters)
         rv_home_main = view.findViewById(R.id.rv_home_main)
-        manager=StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        manager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         rv_home_main.layoutManager = manager
         refreshAdapter(list)
         getPhotoFromServer()
 
-        val scrollListener=object :EndlessRecyclerViewScrollListener(manager){
+        val scrollListener = object : EndlessRecyclerViewScrollListener(manager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 getPhotoFromServer()
             }
@@ -63,7 +66,7 @@ class HomeFragment : Fragment() {
                     response: Response<ArrayList<PhotosResponseItem>>
                 ) {
                     list.addAll(response.body()!!)
-                    adapter.notifyDataSetChanged()
+                    adapterHome.notifyDataSetChanged()
                     ProgressDialog.dismissProgress()
                 }
 
@@ -83,14 +86,23 @@ class HomeFragment : Fragment() {
 
 
     private fun refreshAdapter(list: ArrayList<PhotosResponseItem>) {
-        adapter = HomePhotosAdapter(list)
-        rv_home_main.adapter = adapter
+        adapterHome = HomePhotosAdapter(list)
+        rv_home_main.adapter = adapterHome
     }
 
     private fun prepareFilters() {
-        filters = ArrayList<Filter>()
-        filters.add(Filter("All", true))
-        filters.add(Filter("Motivation"))
+        filters = ArrayList()
+        RetrofitHttp.apiService.getTopics().enqueue(object : Callback<TopicItem> {
+            override fun onResponse(call: Call<TopicItem>, response: Response<TopicItem>) {
+                filters.addAll(response.body() as ArrayList<TopicItem>)
+
+            }
+
+            override fun onFailure(call: Call<TopicItem>, t: Throwable) {
+
+            }
+
+        })
     }
 
 

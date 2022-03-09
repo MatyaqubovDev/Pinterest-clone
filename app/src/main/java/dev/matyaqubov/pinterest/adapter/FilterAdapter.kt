@@ -11,8 +11,9 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import dev.matyaqubov.pinterest.R
 import dev.matyaqubov.pinterest.model.Filter
+import dev.matyaqubov.pinterest.service.model.TopicItem
 
-class FilterAdapter(var items:ArrayList<Filter>) :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FilterAdapter(var items:ArrayList<TopicItem>) :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var selectedIndex:Int=0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return FilterViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_filter,parent,false))
@@ -22,7 +23,7 @@ class FilterAdapter(var items:ArrayList<Filter>) :RecyclerView.Adapter<RecyclerV
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if(holder is FilterViewHolder){
             holder.apply {
-                tv_filter.text=items[position].name
+                tv_filter.text=items[position].title
                 item.isSelected=items[position].isSelected
                 if (item.isSelected){
                     selectedIndex=position
