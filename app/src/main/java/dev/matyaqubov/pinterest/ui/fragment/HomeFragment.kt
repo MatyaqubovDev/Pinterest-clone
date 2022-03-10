@@ -1,6 +1,7 @@
 package dev.matyaqubov.pinterest.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.pinterestclone.helper.EndlessRecyclerViewScrollListener
 import dev.matyaqubov.pinterest.R
 import dev.matyaqubov.pinterest.adapter.FilterAdapter
@@ -27,6 +29,7 @@ class HomeFragment : Fragment() {
     private lateinit var filters: ArrayList<TopicItem>
     var list = ArrayList<PhotosResponseItem>()
     var page = 0
+    private lateinit var swipeRefreshLayout:SwipeRefreshLayout
     private lateinit var adapterHome: HomePhotosAdapter
     private lateinit var manager: StaggeredGridLayoutManager
 
@@ -39,7 +42,12 @@ class HomeFragment : Fragment() {
     private fun initViews(view: View): View {
         prepareFilters()
         rv_filter = view.findViewById(R.id.rv_filter)
-
+        swipeRefreshLayout=view.findViewById(R.id.swipeRefresh2)
+        swipeRefreshLayout.setOnRefreshListener {
+            swipeRefreshLayout.isRefreshing = false
+            list.clear()
+            getPhotoFromServer()
+        }
         rv_filter.adapter = FilterAdapter(filters)
         rv_home_main = view.findViewById(R.id.rv_home_main)
         manager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -67,6 +75,7 @@ class HomeFragment : Fragment() {
                 ) {
                     list.addAll(response.body()!!)
                     adapterHome.notifyDataSetChanged()
+                    swipeRefreshLayout.isRefreshing=false
                     ProgressDialog.dismissProgress()
                 }
 
@@ -81,7 +90,7 @@ class HomeFragment : Fragment() {
 
     @JvmName("getPage1")
     fun getPage(): Int {
-        return if (page < 100) page + 1 else page
+        return ++page
     }
 
 

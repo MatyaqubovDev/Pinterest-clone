@@ -7,6 +7,7 @@
         <entry key="app/src/main/res/drawable/edittext_corner.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/round_corner.xml" value="0.2203125" />
+        <entry key="app/src/main/res/drawable/round_shape_transparent.xml" value="0.2203125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/fragment_message.xml" value="0.20416666666666666" />
@@ -14,6 +15,7 @@
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/item_filter.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/item_home_photos.xml" value="0.20416666666666666" />
+        <entry key="app/src/main/res/layout/item_search_layout.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/progessbar.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2203125" />

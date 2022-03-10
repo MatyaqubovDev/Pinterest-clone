@@ -11,6 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Pinterest">
         <activity
+            android:windowSoftInputMode="adjustNothing"
             android:name=".ui.activity.MainActivity"
             android:exported="true">
             <intent-filter>
