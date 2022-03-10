@@ -70,22 +70,28 @@ class SearchFragment : Fragment() {
         }
         et_search.setOnEditorActionListener { _, actionId, keyEvent ->
             if ((keyEvent != null && (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER))|| (actionId == EditorInfo.IME_ACTION_SEARCH) ) {
+                list.clear()
                 searchPhoto(word)
             }
             false
         }
         initSearchRecyclerView(view)
         tv_cancel.setOnClickListener {
+            list.clear()
             searchPhoto(word)
 
         }
 
         adapterOne.clickItem={
+            et_search.setText(it)
+            list.clear()
             nestedScrollView.visibility=View.GONE
             searchPhoto(it)
         }
 
         adapterTwo.clickItem={
+            list.clear()
+            et_search.setText(it)
             nestedScrollView.visibility=View.GONE
             searchPhoto(it)
         }
