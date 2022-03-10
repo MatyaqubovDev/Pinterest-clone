@@ -1,6 +1,7 @@
 package dev.matyaqubov.pinterest.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -110,6 +111,7 @@ class SearchFragment : Fragment() {
                     response: Response<Search>
                 ) {
                     list.addAll(response.body()!!.results!!)
+                    Log.d("requessssst", "onResponse: ${response.body()!!.results!!}")
                     adapter.notifyDataSetChanged()
                     ProgressDialog.dismissProgress()
                 }
