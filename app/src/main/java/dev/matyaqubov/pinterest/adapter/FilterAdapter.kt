@@ -13,8 +13,9 @@ import dev.matyaqubov.pinterest.R
 import dev.matyaqubov.pinterest.model.Filter
 import dev.matyaqubov.pinterest.service.model.TopicItem
 
-class FilterAdapter(var items:ArrayList<TopicItem>) :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FilterAdapter(var items:ArrayList<Filter>) :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var selectedIndex:Int=0
+    var itemselected:((position:Int)->Unit)?=null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return FilterViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_filter,parent,false))
     }
@@ -23,7 +24,7 @@ class FilterAdapter(var items:ArrayList<TopicItem>) :RecyclerView.Adapter<Recycl
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if(holder is FilterViewHolder){
             holder.apply {
-                tv_filter.text=items[position].title
+                tv_filter.text=items[position].name
                 item.isSelected=items[position].isSelected
                 if (item.isSelected){
                     selectedIndex=position
@@ -32,6 +33,7 @@ class FilterAdapter(var items:ArrayList<TopicItem>) :RecyclerView.Adapter<Recycl
                     tv_filter.setTextColor(Color.BLACK)
                 }
                 item.setOnClickListener {
+                    itemselected!!.invoke(position)
                     change(position)
                 }
             }

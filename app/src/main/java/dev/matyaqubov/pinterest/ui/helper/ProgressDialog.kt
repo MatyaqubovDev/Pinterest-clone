@@ -10,6 +10,7 @@ object ProgressDialog {
 
     fun showProgress(context: Context) {
         dialog = Dialog(context);
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.progessbar);
         dialog.setCanceledOnTouchOutside(false);

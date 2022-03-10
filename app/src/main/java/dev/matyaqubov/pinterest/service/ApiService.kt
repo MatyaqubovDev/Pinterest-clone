@@ -24,7 +24,7 @@ interface ApiService {
     fun getSearchResult(
         @Query("query") query: String,
         @Query("page") page: Int,
-        @Query("per_page") per_page: Int = 20
+        @Query("per_page") per_page: Int = 30
     ): Call<Search>
 
     @GET("topics")

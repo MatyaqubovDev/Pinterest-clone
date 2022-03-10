@@ -39,8 +39,8 @@ class SearchFragment : Fragment() {
     lateinit var adapter: SearchPhotosAdapter
     private var photosOne = ArrayList<Home>()
     private var photosTwo = ArrayList<Home>()
-    private lateinit var adapterOne:SearchAdapter
-    private lateinit var adapterTwo:SearchAdapter
+    private lateinit var adapterOne: SearchAdapter
+    private lateinit var adapterTwo: SearchAdapter
     private lateinit var manager: StaggeredGridLayoutManager
     private lateinit var nestedScrollView: NestedScrollView
     override fun onCreateView(
@@ -59,7 +59,12 @@ class SearchFragment : Fragment() {
         nestedScrollView = view.findViewById(R.id.nestedScroll)
         et_search.addTextChangedListener {
             tv_cancel.visibility = View.VISIBLE
-            et_search.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_camera_alt_24, 0)
+            et_search.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.ic_baseline_camera_alt_24,
+                0
+            )
             word = it.toString()
             if (word != "") {
                 tv_cancel.text = "Search"
@@ -69,7 +74,7 @@ class SearchFragment : Fragment() {
             nestedScrollView.visibility = View.GONE
         }
         et_search.setOnEditorActionListener { _, actionId, keyEvent ->
-            if ((keyEvent != null && (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER))|| (actionId == EditorInfo.IME_ACTION_SEARCH) ) {
+            if ((keyEvent != null && (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_SEARCH)) {
                 list.clear()
                 searchPhoto(word)
             }
@@ -82,23 +87,23 @@ class SearchFragment : Fragment() {
 
         }
 
-        adapterOne.clickItem={
+        adapterOne.clickItem = {
             et_search.setText(it)
             list.clear()
-            nestedScrollView.visibility=View.GONE
+            nestedScrollView.visibility = View.GONE
             searchPhoto(it)
         }
 
-        adapterTwo.clickItem={
+        adapterTwo.clickItem = {
             list.clear()
             et_search.setText(it)
-            nestedScrollView.visibility=View.GONE
+            nestedScrollView.visibility = View.GONE
             searchPhoto(it)
         }
 
         val scrollListener = object : EndlessRecyclerViewScrollListener(manager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                 searchPhoto(word)
+                searchPhoto(word)
             }
 
         }
@@ -113,7 +118,7 @@ class SearchFragment : Fragment() {
 
     private fun searchPhoto(word: String) {
         ProgressDialog.showProgress(requireContext())
-        RetrofitHttp.apiService.getSearchResult(word,getPage())
+        RetrofitHttp.apiService.getSearchResult(word, getPage())
             .enqueue(object : Callback<Search> {
                 override fun onResponse(
                     call: Call<Search>,
@@ -137,7 +142,11 @@ class SearchFragment : Fragment() {
 
     @JvmName("getPage1")
     private fun getPage(): Int {
-        return if (page < 250) page++ else page
+        if (page < 250) { return page++
+        } else {
+            page = 1
+            return page
+        }
     }
 
     private fun initSearchRecyclerView(view: View) {
@@ -146,8 +155,8 @@ class SearchFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView2.layoutManager = GridLayoutManager(requireContext(), 2)
         getinits()
-        adapterOne=SearchAdapter(photosOne)
-        adapterTwo=SearchAdapter(photosTwo)
+        adapterOne = SearchAdapter(photosOne)
+        adapterTwo = SearchAdapter(photosTwo)
         recyclerView.adapter = adapterOne
         recyclerView2.adapter = adapterTwo
     }

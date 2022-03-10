@@ -13,10 +13,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.pinterestclone.helper.EndlessRecyclerViewScrollListener
 import dev.matyaqubov.pinterest.R
 import dev.matyaqubov.pinterest.adapter.FilterAdapter
-import dev.matyaqubov.pinterest.adapter.HomePhotosAdapter
+import dev.matyaqubov.pinterest.adapter.SearchPhotosAdapter
+import dev.matyaqubov.pinterest.model.Filter
 import dev.matyaqubov.pinterest.service.RetrofitHttp
-import dev.matyaqubov.pinterest.service.model.PhotosResponseItem
-import dev.matyaqubov.pinterest.service.model.TopicItem
+import dev.matyaqubov.pinterest.service.model.Search
+import dev.matyaqubov.pinterest.service.model.SearchResultsItem
 import dev.matyaqubov.pinterest.ui.helper.ProgressDialog
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,11 +27,12 @@ import retrofit2.Response
 class HomeFragment : Fragment() {
     private lateinit var rv_filter: RecyclerView
     private lateinit var rv_home_main: RecyclerView
-    private lateinit var filters: ArrayList<TopicItem>
-    var list = ArrayList<PhotosResponseItem>()
-    var page = 0
-    private lateinit var swipeRefreshLayout:SwipeRefreshLayout
-    private lateinit var adapterHome: HomePhotosAdapter
+    private lateinit var filters: ArrayList<Filter>
+    var list = ArrayList<SearchResultsItem>()
+    var page = 1
+    var word: String = ""
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var adapterHome: SearchPhotosAdapter
     private lateinit var manager: StaggeredGridLayoutManager
 
     override fun onCreateView(
@@ -41,23 +43,29 @@ class HomeFragment : Fragment() {
 
     private fun initViews(view: View): View {
         prepareFilters()
+        word="Nasheed"
         rv_filter = view.findViewById(R.id.rv_filter)
-        swipeRefreshLayout=view.findViewById(R.id.swipeRefresh2)
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefresh2)
         swipeRefreshLayout.setOnRefreshListener {
             swipeRefreshLayout.isRefreshing = false
             list.clear()
-            getPhotoFromServer()
+            searchPhoto(word)
         }
-        rv_filter.adapter = FilterAdapter(filters)
+        var filterAdapter =FilterAdapter(filters)
+        rv_filter.adapter = filterAdapter
+
+        filterAdapter.itemselected={ position ->
+            word = filters[position].name
+            searchPhoto(word)
+        }
         rv_home_main = view.findViewById(R.id.rv_home_main)
         manager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         rv_home_main.layoutManager = manager
         refreshAdapter(list)
-        getPhotoFromServer()
-
+        searchPhoto(word)
         val scrollListener = object : EndlessRecyclerViewScrollListener(manager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                getPhotoFromServer()
+                searchPhoto(word)
             }
 
         }
@@ -65,53 +73,56 @@ class HomeFragment : Fragment() {
         return view
     }
 
-    fun getPhotoFromServer() {
+    private fun searchPhoto(word: String) {
         ProgressDialog.showProgress(requireContext())
-        RetrofitHttp.apiService.getPhotos(getPage())
-            .enqueue(object : Callback<ArrayList<PhotosResponseItem>> {
+        RetrofitHttp.apiService.getSearchResult(word, getPage())
+            .enqueue(object : Callback<Search> {
                 override fun onResponse(
-                    call: Call<ArrayList<PhotosResponseItem>>,
-                    response: Response<ArrayList<PhotosResponseItem>>
+                    call: Call<Search>,
+                    response: Response<Search>
                 ) {
-                    list.addAll(response.body()!!)
-                    adapterHome.notifyDataSetChanged()
-                    swipeRefreshLayout.isRefreshing=false
+                    if (!response.body()!!.results.isNullOrEmpty()){
+                        list.addAll(response.body()!!.results!!)
+                        adapterHome.notifyDataSetChanged()
+                    } else {
+                        Toast.makeText(requireContext(), "Limit tugadi yoki bunday rasm topa oladim", Toast.LENGTH_SHORT).show()
+                    }
+
                     ProgressDialog.dismissProgress()
                 }
 
-                override fun onFailure(call: Call<ArrayList<PhotosResponseItem>>, t: Throwable) {
+                override fun onFailure(call: Call<Search>, t: Throwable) {
                     ProgressDialog.dismissProgress()
-                    Toast.makeText(requireContext(), "Intenet bilan muammo", Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(), "Check internet please", Toast.LENGTH_SHORT)
                         .show()
                 }
 
             })
+
     }
 
     @JvmName("getPage1")
-    fun getPage(): Int {
-        return ++page
+    private fun getPage(): Int {
+        if (page < 250) { return page++
+        } else {
+            page = 1
+            return page
+        }
     }
 
 
-    private fun refreshAdapter(list: ArrayList<PhotosResponseItem>) {
-        adapterHome = HomePhotosAdapter(list)
+    private fun refreshAdapter(list: ArrayList<SearchResultsItem>) {
+        adapterHome = SearchPhotosAdapter(list)
         rv_home_main.adapter = adapterHome
     }
 
     private fun prepareFilters() {
         filters = ArrayList()
-        RetrofitHttp.apiService.getTopics().enqueue(object : Callback<TopicItem> {
-            override fun onResponse(call: Call<TopicItem>, response: Response<TopicItem>) {
-                filters.addAll(response.body() as ArrayList<TopicItem>)
-
-            }
-
-            override fun onFailure(call: Call<TopicItem>, t: Throwable) {
-
-            }
-
-        })
+        filters.add(Filter("All", true))
+        filters.add(Filter("Laptops"))
+        filters.add(Filter("Mobiles"))
+        filters.add(Filter("Natures"))
+        filters.add(Filter("Buildings"))
     }
 
 

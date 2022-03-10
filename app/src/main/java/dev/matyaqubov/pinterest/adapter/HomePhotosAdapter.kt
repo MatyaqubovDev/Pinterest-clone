@@ -21,7 +21,7 @@ class HomePhotosAdapter(val lists: ArrayList<PhotosResponseItem>) : RecyclerView
         val item=lists[position]
         if (holder is PhotoListViewHolder){
             holder.apply {
-                tv_describtion.text=item.description.toString()
+                tv_describtion.text=item.description
                 Glide.with(iv_home.context).load(item.urls!!.thumb).error(R.mipmap.ic_launcher).into(iv_home)
                 Log.d("positionnnnnn", "onBindViewHolder: $position")
                 iv_more.setOnClickListener {
