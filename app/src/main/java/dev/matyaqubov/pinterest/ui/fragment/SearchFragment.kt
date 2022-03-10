@@ -22,7 +22,6 @@ import dev.matyaqubov.pinterest.adapter.SearchAdapter
 import dev.matyaqubov.pinterest.adapter.SearchPhotosAdapter
 import dev.matyaqubov.pinterest.model.Home
 import dev.matyaqubov.pinterest.service.RetrofitHttp
-import dev.matyaqubov.pinterest.service.model.PhotosResponseItem
 import dev.matyaqubov.pinterest.service.model.Search
 import dev.matyaqubov.pinterest.service.model.SearchResultsItem
 import dev.matyaqubov.pinterest.ui.helper.ProgressDialog
@@ -37,15 +36,16 @@ class SearchFragment : Fragment() {
     private lateinit var tv_cancel: TextView
     private var word: String = ""
     var list = ArrayList<SearchResultsItem>()
-    var list2 = ArrayList<PhotosResponseItem>()
     lateinit var adapter: SearchPhotosAdapter
-    var photosOne = ArrayList<Home>()
-    var photosTwo = ArrayList<Home>()
+    private var photosOne = ArrayList<Home>()
+    private var photosTwo = ArrayList<Home>()
+    private lateinit var adapterOne:SearchAdapter
+    private lateinit var adapterTwo:SearchAdapter
     private lateinit var manager: StaggeredGridLayoutManager
     private lateinit var nestedScrollView: NestedScrollView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return initViews(inflater.inflate(R.layout.fragment_search, container, false))
     }
 
@@ -59,12 +59,7 @@ class SearchFragment : Fragment() {
         nestedScrollView = view.findViewById(R.id.nestedScroll)
         et_search.addTextChangedListener {
             tv_cancel.visibility = View.VISIBLE
-            et_search.setCompoundDrawablesWithIntrinsicBounds(
-                0,
-                0,
-                R.drawable.ic_baseline_camera_alt_24,
-                0
-            );
+            et_search.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_camera_alt_24, 0)
             word = it.toString()
             if (word != "") {
                 tv_cancel.text = "Search"
@@ -85,6 +80,15 @@ class SearchFragment : Fragment() {
 
         }
 
+        adapterOne.clickItem={
+            nestedScrollView.visibility=View.GONE
+            searchPhoto(it)
+        }
+
+        adapterTwo.clickItem={
+            nestedScrollView.visibility=View.GONE
+            searchPhoto(it)
+        }
 
         val scrollListener = object : EndlessRecyclerViewScrollListener(manager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
@@ -98,7 +102,6 @@ class SearchFragment : Fragment() {
 
     private fun refreshAdapter(list: ArrayList<SearchResultsItem>) {
         adapter = SearchPhotosAdapter(list)
-        // adapter= HomePhotosAdapter(list2)
         rv_search_main.adapter = adapter
     }
 
@@ -131,23 +134,16 @@ class SearchFragment : Fragment() {
         return if (page < 250) page++ else page
     }
 
-    fun EditText.doneClickOnKeyboard() {
-        this.setOnEditorActionListener { _, actionId, keyEvent ->
-            if ((keyEvent != null && (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
-
-            }
-            false
-        }
-    }
-
     private fun initSearchRecyclerView(view: View) {
-        var recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewOne)
-        var recyclerView2 = view.findViewById<RecyclerView>(R.id.recyclerViewTwo)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewOne)
+        val recyclerView2 = view.findViewById<RecyclerView>(R.id.recyclerViewTwo)
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView2.layoutManager = GridLayoutManager(requireContext(), 2)
         getinits()
-        recyclerView.adapter = SearchAdapter(photosOne)
-        recyclerView2.adapter = SearchAdapter(photosTwo)
+        adapterOne=SearchAdapter(photosOne)
+        adapterTwo=SearchAdapter(photosTwo)
+        recyclerView.adapter = adapterOne
+        recyclerView2.adapter = adapterTwo
     }
 
     private fun getinits() {
