@@ -55,7 +55,10 @@ class HomeFragment : Fragment() {
         rv_filter.adapter = filterAdapter
 
         filterAdapter.itemselected={ position ->
+            list.clear()
+            if (position!=0)
             word = filters[position].name
+            else word="programming"
             searchPhoto(word)
         }
         rv_home_main = view.findViewById(R.id.rv_home_main)

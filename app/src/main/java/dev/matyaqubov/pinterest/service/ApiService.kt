@@ -1,15 +1,9 @@
 package dev.matyaqubov.pinterest.service
 
 
-import dev.matyaqubov.pinterest.service.model.PhotosResponseItem
-import dev.matyaqubov.pinterest.service.model.Search
-import dev.matyaqubov.pinterest.service.model.SearchResultsItem
-import dev.matyaqubov.pinterest.service.model.TopicItem
+import dev.matyaqubov.pinterest.service.model.*
 import retrofit2.Call
-import retrofit2.http.GET
-
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ApiService {
 
@@ -29,6 +23,7 @@ interface ApiService {
 
     @GET("topics")
     fun getTopics(): Call<TopicItem>
+    
 
     @GET("photos/{id}")
     fun getPhoto(@Path("id") id: String): Call<PhotosResponseItem>

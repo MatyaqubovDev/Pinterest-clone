@@ -1,5 +1,6 @@
 package dev.matyaqubov.pinterest.ui.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -35,6 +36,7 @@ class SearchFragment : Fragment() {
     private lateinit var et_search: EditText
     private lateinit var tv_cancel: TextView
     private var word: String = ""
+    var sendData: SendData? = null
     var list = ArrayList<SearchResultsItem>()
     lateinit var adapter: SearchPhotosAdapter
     private var photosOne = ArrayList<Home>()
@@ -50,6 +52,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun initViews(view: View): View {
+
         rv_search_main = view.findViewById(R.id.rv_search_main)
         manager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         rv_search_main.layoutManager = manager
@@ -108,7 +111,27 @@ class SearchFragment : Fragment() {
 
         }
         rv_search_main.addOnScrollListener(scrollListener)
+
+        adapter.photoItemClick = {
+            sendData!!.sendPhoto(it,word,page)
+        }
+
+
         return view
+    }
+
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        try {
+            sendData = activity as SendData
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), " must implement", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onDetach() {
+        sendData = null
+        super.onDetach()
     }
 
     private fun refreshAdapter(list: ArrayList<SearchResultsItem>) {
@@ -142,7 +165,8 @@ class SearchFragment : Fragment() {
 
     @JvmName("getPage1")
     private fun getPage(): Int {
-        if (page < 250) { return page++
+        if (page < 250) {
+            return page++
         } else {
             page = 1
             return page
@@ -251,5 +275,8 @@ class SearchFragment : Fragment() {
         )
     }
 
+    interface SendData {
+        fun sendPhoto(photo:SearchResultsItem,word: String,page:Int)
+    }
 
 }

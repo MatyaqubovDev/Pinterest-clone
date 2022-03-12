@@ -1,6 +1,7 @@
 package dev.matyaqubov.pinterest.service.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Search(
 
@@ -72,6 +73,6 @@ data class SearchResultsItem(
 
 	@field:SerializedName("likes")
 	val likes: Int? = null
-)
+) :Serializable
 
 

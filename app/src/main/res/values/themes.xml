@@ -17,4 +17,12 @@
     <style name="border2">
         <item name="cornerSize">15%</item>
     </style>
+
+    <style name="circle">
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="topcorner">
+        <item name="cornerSizeTopRight">40dp</item>
+        <item name="cornerSizeTopLeft">40dp</item>
+    </style>
 </resources>

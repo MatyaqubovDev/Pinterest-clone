@@ -1,6 +1,7 @@
 package dev.matyaqubov.pinterest.adapter
 
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,9 @@ import dev.matyaqubov.pinterest.service.model.SearchResultsItem
 
 class SearchPhotosAdapter(val lists: ArrayList<SearchResultsItem>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    var photoItemClick:((photo:SearchResultsItem)->Unit)?=null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return PhotoListViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_home_photos, parent, false)
@@ -21,13 +25,17 @@ class SearchPhotosAdapter(val lists: ArrayList<SearchResultsItem>) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = lists[position]
+        val listItem: SearchResultsItem = lists[position]
         if (holder is PhotoListViewHolder) {
             holder.apply {
-                tv_describtion.text = item.description
-                Glide.with(iv_home.context).load(item.urls!!.thumb).error(R.mipmap.ic_launcher).into(iv_home)
+                tv_describtion.text = listItem.description
+                Glide.with(iv_home.context).load(listItem.urls!!.thumb).error(R.mipmap.ic_launcher).placeholder(ColorDrawable(Color.parseColor(listItem.color))).into(iv_home)
                 iv_more.setOnClickListener {
                     Toast.makeText(iv_home.context, "Coming soon", Toast.LENGTH_SHORT).show()
+                }
+
+                iv_home.setOnClickListener {
+                    photoItemClick!!.invoke(listItem)
                 }
             }
         }
