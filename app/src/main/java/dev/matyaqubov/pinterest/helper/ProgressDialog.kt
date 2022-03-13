@@ -1,4 +1,4 @@
-package dev.matyaqubov.pinterest.ui.helper
+package dev.matyaqubov.pinterest.helper
 
 import android.app.Dialog
 import android.content.Context

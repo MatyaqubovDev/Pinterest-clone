@@ -25,7 +25,7 @@ import dev.matyaqubov.pinterest.model.Home
 import dev.matyaqubov.pinterest.service.RetrofitHttp
 import dev.matyaqubov.pinterest.service.model.Search
 import dev.matyaqubov.pinterest.service.model.SearchResultsItem
-import dev.matyaqubov.pinterest.ui.helper.ProgressDialog
+import dev.matyaqubov.pinterest.helper.ProgressDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -147,7 +147,7 @@ class SearchFragment : Fragment() {
                     call: Call<Search>,
                     response: Response<Search>
                 ) {
-                    list.addAll(response.body()!!.results!!)
+                    if(response.body()!=null) list.addAll(response.body()!!.results!!)
                     Log.d("requessssst", "onResponse: ${response.body()!!.results!!}")
                     adapter.notifyDataSetChanged()
                     ProgressDialog.dismissProgress()

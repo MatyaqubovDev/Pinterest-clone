@@ -1,7 +1,6 @@
 package dev.matyaqubov.pinterest.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +17,7 @@ import dev.matyaqubov.pinterest.model.Filter
 import dev.matyaqubov.pinterest.service.RetrofitHttp
 import dev.matyaqubov.pinterest.service.model.Search
 import dev.matyaqubov.pinterest.service.model.SearchResultsItem
-import dev.matyaqubov.pinterest.ui.helper.ProgressDialog
+import dev.matyaqubov.pinterest.helper.ProgressDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,7 +42,7 @@ class HomeFragment : Fragment() {
 
     private fun initViews(view: View): View {
         prepareFilters()
-        word="Nasheed"
+        word="All"
         rv_filter = view.findViewById(R.id.rv_filter)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh2)
         swipeRefreshLayout.setOnRefreshListener {
@@ -106,7 +105,8 @@ class HomeFragment : Fragment() {
 
     @JvmName("getPage1")
     private fun getPage(): Int {
-        if (page < 250) { return page++
+        if (page < 250) {
+            return page++
         } else {
             page = 1
             return page

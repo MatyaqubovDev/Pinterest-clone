@@ -12,7 +12,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -26,7 +25,7 @@ import dev.matyaqubov.pinterest.adapter.SearchPhotosAdapter
 import dev.matyaqubov.pinterest.service.RetrofitHttp
 import dev.matyaqubov.pinterest.service.model.Search
 import dev.matyaqubov.pinterest.service.model.SearchResultsItem
-import dev.matyaqubov.pinterest.ui.helper.ProgressDialog
+import dev.matyaqubov.pinterest.helper.ProgressDialog
 import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
@@ -69,7 +68,8 @@ class DetailsFragment : Fragment() , View.OnTouchListener,View.OnScrollChangeLis
     private fun initViews(view: View): View {
 
         recyclerView=view.findViewById(R.id.recyclerView)
-        recyclerView.setHasFixedSize(true)
+//        recyclerView.setHasFixedSize(true)
+        recyclerView.isNestedScrollingEnabled=false
         iv_profile=view.findViewById(R.id.iv_profile)
         tv_username=view.findViewById(R.id.tv_username)
         tv_comment_username=view.findViewById(R.id.tv_comment_username)
@@ -87,22 +87,25 @@ class DetailsFragment : Fragment() , View.OnTouchListener,View.OnScrollChangeLis
         searchPhoto(word)
 
 
-//        nestedScrollView.isNestedScrollingEnabled = false
+
 //        val scrollListener = object : EndlessRecyclerViewScrollListener(manager) {
 //            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-////                searchPhoto(word)
+//                nestedScrollView.isNestedScrollingEnabled = false
+//                searchPhoto(word)
 //                Toast.makeText(context, "???", Toast.LENGTH_SHORT).show()
 //            }
 //        }
 //        recyclerView.addOnScrollListener(scrollListener)
 
-
+//
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if (!recyclerView.canScrollVertically(1)) {
-                    searchPhoto(word)
+                super.onScrollStateChanged(recyclerView, newState)
+//                if (!recyclerView.canScrollVertically(1)) {
+
+                searchPhoto(word)
                     Toast.makeText(context, "last", Toast.LENGTH_SHORT).show()
-                }
+//                }
             }
         })
 
@@ -119,11 +122,7 @@ class DetailsFragment : Fragment() , View.OnTouchListener,View.OnScrollChangeLis
     }
 
     private fun setData() {
-        Glide.with(iv_main.context)
-            .load(photo!!.urls!!.smallS3)
-            .error(R.mipmap.ic_launcher)
-            .placeholder(ColorDrawable(Color.parseColor(photo!!.color)))
-            .into(iv_main)
+        Glide.with(iv_main.context).load(photo!!.urls!!.smallS3).error(R.mipmap.ic_launcher).placeholder(ColorDrawable(Color.parseColor(photo!!.color))).into(iv_main)
         Glide.with(iv_profile.context).load(photo!!.user!!.profileImage!!.small).into(iv_profile)
         Glide.with(iv_profile.context).load(photo!!.user!!.profileImage!!.small).into(iv_comment_profile)
         tv_username.text=photo!!.user!!.username
