@@ -1,5 +1,6 @@
 package dev.matyaqubov.pinterest.ui.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,7 @@ class HomeFragment : Fragment() {
     var list = ArrayList<SearchResultsItem>()
     var page = 1
     var word: String = ""
+    var sendData: SearchFragment.SendData? = null
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var adapterHome: SearchPhotosAdapter
     private lateinit var manager: StaggeredGridLayoutManager
@@ -42,7 +44,7 @@ class HomeFragment : Fragment() {
 
     private fun initViews(view: View): View {
         prepareFilters()
-        word="All"
+        word="service"
         rv_filter = view.findViewById(R.id.rv_filter)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh2)
         swipeRefreshLayout.setOnRefreshListener {
@@ -65,6 +67,7 @@ class HomeFragment : Fragment() {
         rv_home_main.layoutManager = manager
         refreshAdapter(list)
         searchPhoto(word)
+
         val scrollListener = object : EndlessRecyclerViewScrollListener(manager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 searchPhoto(word)
@@ -72,6 +75,13 @@ class HomeFragment : Fragment() {
 
         }
         rv_home_main.addOnScrollListener(scrollListener)
+
+        adapterHome.photoItemClick = {
+            sendData!!.sendPhoto(it,word,page)
+        }
+
+
+
         return view
     }
 
@@ -114,6 +124,7 @@ class HomeFragment : Fragment() {
     }
 
 
+
     private fun refreshAdapter(list: ArrayList<SearchResultsItem>) {
         adapterHome = SearchPhotosAdapter(list)
         rv_home_main.adapter = adapterHome
@@ -128,5 +139,17 @@ class HomeFragment : Fragment() {
         filters.add(Filter("Buildings"))
     }
 
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        try {
+            sendData = activity as SearchFragment.SendData
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), " must implement", Toast.LENGTH_SHORT).show()
+        }
+    }
 
+    override fun onDetach() {
+        sendData = null
+        super.onDetach()
+    }
 }

@@ -113,6 +113,7 @@ class SearchFragment : Fragment() {
         rv_search_main.addOnScrollListener(scrollListener)
 
         adapter.photoItemClick = {
+
             sendData!!.sendPhoto(it,word,page)
         }
 

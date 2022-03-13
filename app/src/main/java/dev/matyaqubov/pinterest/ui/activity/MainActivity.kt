@@ -1,6 +1,7 @@
 package dev.matyaqubov.pinterest.ui.activity
 
 import android.os.Bundle
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -9,7 +10,8 @@ import dev.matyaqubov.pinterest.service.model.SearchResultsItem
 import dev.matyaqubov.pinterest.ui.fragment.*
 
 class MainActivity : AppCompatActivity(), SearchFragment.SendData {
-    val detailsFragment = DetailsFragment()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -38,7 +40,7 @@ class MainActivity : AppCompatActivity(), SearchFragment.SendData {
 
     }
 
-    private fun setCurrentFragment(fragment: Fragment) {
+    fun setCurrentFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.flFragment, fragment)
             addToBackStack("back")
@@ -49,7 +51,8 @@ class MainActivity : AppCompatActivity(), SearchFragment.SendData {
 
 
 
-    override fun sendPhoto(photo:SearchResultsItem, word: String,page:Int) {
+    override fun sendPhoto(photo:SearchResultsItem, word: String, page:Int) {
+        val detailsFragment = DetailsFragment()
         detailsFragment.receivedData(photo, word,page)
         setCurrentFragment(detailsFragment)
         }

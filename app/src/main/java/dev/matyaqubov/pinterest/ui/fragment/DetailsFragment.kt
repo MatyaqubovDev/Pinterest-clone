@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -16,45 +15,45 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
-import com.example.pinterestclone.helper.EndlessRecyclerViewScrollListener
 import dev.matyaqubov.pinterest.R
 import dev.matyaqubov.pinterest.adapter.SearchPhotosAdapter
+import dev.matyaqubov.pinterest.helper.ProgressDialog
 import dev.matyaqubov.pinterest.service.RetrofitHttp
 import dev.matyaqubov.pinterest.service.model.Search
 import dev.matyaqubov.pinterest.service.model.SearchResultsItem
-import dev.matyaqubov.pinterest.helper.ProgressDialog
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.concurrent.fixedRateTimer
 
 
-@RequiresApi(Build.VERSION_CODES.M)
-class DetailsFragment : Fragment() , View.OnTouchListener,View.OnScrollChangeListener{
+class DetailsFragment : Fragment() {
 
-    private lateinit var tv_username:TextView
-    private lateinit var tv_comment_username:TextView
-    private lateinit var tv_followers:TextView
-    private lateinit var tv_describtion:TextView
-    private lateinit var tv_alt_describtion:TextView
-    private lateinit var tv_visit:TextView
-    private lateinit var tv_save:TextView
-    private lateinit var iv_main:ImageView
-    private lateinit var iv_back:ImageView
-    private lateinit var iv_profile:ImageView
-    private lateinit var iv_comment_profile:ImageView
-    private lateinit var iv_share:ImageView
+    private lateinit var tv_username: TextView
+    private lateinit var tv_comment_username: TextView
+    private lateinit var tv_followers: TextView
+    private lateinit var tv_describtion: TextView
+    private lateinit var tv_alt_describtion: TextView
+    private lateinit var tv_visit: TextView
+    private lateinit var tv_save: TextView
+    private lateinit var iv_main: ImageView
+    private lateinit var iv_back: ImageView
+    private lateinit var iv_profile: ImageView
+    private lateinit var iv_comment_profile: ImageView
+    private lateinit var iv_share: ImageView
     private lateinit var recyclerView: RecyclerView
-    private var word :String=""
-    private var photo:SearchResultsItem?=null
+    private var word: String = ""
+    private var photo: SearchResultsItem? = null
     private lateinit var adapter: SearchPhotosAdapter
     private lateinit var manager: StaggeredGridLayoutManager
     private var sendData: SearchFragment.SendData? = null
     private var list = ArrayList<SearchResultsItem>()
-    private var page=1
+    private var page = 1
     lateinit var nestedScrollView: NestedScrollView
 
     override fun onCreateView(
@@ -67,21 +66,20 @@ class DetailsFragment : Fragment() , View.OnTouchListener,View.OnScrollChangeLis
 
     private fun initViews(view: View): View {
 
-        recyclerView=view.findViewById(R.id.recyclerView)
-//        recyclerView.setHasFixedSize(true)
-        recyclerView.isNestedScrollingEnabled=false
-        iv_profile=view.findViewById(R.id.iv_profile)
-        tv_username=view.findViewById(R.id.tv_username)
-        tv_comment_username=view.findViewById(R.id.tv_comment_username)
-        tv_followers=view.findViewById(R.id.tv_followers)
-        tv_describtion=view.findViewById(R.id.tv_describtion)
-        tv_alt_describtion=view.findViewById(R.id.tv_alt_describtion)
-        tv_visit=view.findViewById(R.id.tv_visit)
-        tv_save=view.findViewById(R.id.tv_save)
-        iv_main=view.findViewById(R.id.iv_main)
-        iv_back=view.findViewById(R.id.iv_back)
-        iv_comment_profile=view.findViewById(R.id.iv_comment_profile)
-        iv_share=view.findViewById(R.id.iv_share)
+        recyclerView = view.findViewById(R.id.recyclerView)
+        recyclerView.isNestedScrollingEnabled = false
+        iv_profile = view.findViewById(R.id.iv_profile)
+        tv_username = view.findViewById(R.id.tv_username)
+        tv_comment_username = view.findViewById(R.id.tv_comment_username)
+        tv_followers = view.findViewById(R.id.tv_followers)
+        tv_describtion = view.findViewById(R.id.tv_describtion)
+        tv_alt_describtion = view.findViewById(R.id.tv_alt_describtion)
+        tv_visit = view.findViewById(R.id.tv_visit)
+        tv_save = view.findViewById(R.id.tv_save)
+        iv_main = view.findViewById(R.id.iv_main)
+        iv_back = view.findViewById(R.id.iv_back)
+        iv_comment_profile = view.findViewById(R.id.iv_comment_profile)
+        iv_share = view.findViewById(R.id.iv_share)
         nestedScrollView = view.findViewById(R.id.nestedScroll)
         setData()
         searchPhoto(word)
@@ -91,6 +89,7 @@ class DetailsFragment : Fragment() , View.OnTouchListener,View.OnScrollChangeLis
         // you can use "NestedScrollView.OnScrollChangeListener"
 //        Here v.getChildCount() -1 should give you the recycler view for which you be implementing endless scrolling.
 //Also scrollY > oldScrollY confirms that the page is being scrolled down.
+
         nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v: NestedScrollView, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
             if (v.getChildAt(v.childCount - 1) != null) {
                 if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight && scrollY > oldScrollY) {
@@ -104,21 +103,22 @@ class DetailsFragment : Fragment() , View.OnTouchListener,View.OnScrollChangeLis
         }
 
         adapter.photoItemClick = {
-            sendData!!.sendPhoto(it,word,page)
+            sendData!!.sendPhoto(it, word, page)
         }
 
 
         return view
     }
-
     private fun setData() {
-        Glide.with(iv_main.context).load(photo!!.urls!!.smallS3).error(R.mipmap.ic_launcher).placeholder(ColorDrawable(Color.parseColor(photo!!.color))).into(iv_main)
+        Glide.with(iv_main.context).load(photo!!.urls!!.smallS3).error(R.mipmap.ic_launcher)
+            .placeholder(ColorDrawable(Color.parseColor(photo!!.color))).into(iv_main)
         Glide.with(iv_profile.context).load(photo!!.user!!.profileImage!!.small).into(iv_profile)
-        Glide.with(iv_profile.context).load(photo!!.user!!.profileImage!!.small).into(iv_comment_profile)
-        tv_username.text=photo!!.user!!.username
-        tv_comment_username.text=photo!!.user!!.username
-        tv_describtion.text=photo!!.description
-        tv_alt_describtion.text=photo!!.altDescription
+        Glide.with(iv_profile.context).load(photo!!.user!!.profileImage!!.small)
+            .into(iv_comment_profile)
+        tv_username.text = photo!!.user!!.username
+        tv_comment_username.text = photo!!.user!!.username
+        tv_describtion.text = photo!!.description
+        tv_alt_describtion.text = photo!!.altDescription
 
         manager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         recyclerView.layoutManager = manager
@@ -131,10 +131,10 @@ class DetailsFragment : Fragment() , View.OnTouchListener,View.OnScrollChangeLis
         recyclerView.adapter = adapter
     }
 
-    fun receivedData(photo:SearchResultsItem,word: String,page:Int){
-        this.photo=photo
-        this.word=word
-        this.page=page
+    fun receivedData(photo: SearchResultsItem, word: String, page: Int) {
+        this.photo = photo
+        this.word = word
+        this.page = page
     }
 
     private fun searchPhoto(word: String) {
@@ -148,7 +148,7 @@ class DetailsFragment : Fragment() , View.OnTouchListener,View.OnScrollChangeLis
                     if (response.body()!!.results == null)
                         Toast.makeText(context, "LIMIT", Toast.LENGTH_SHORT).show()
                     else
-                    list.addAll(response.body()!!.results!!)
+                        list.addAll(response.body()!!.results!!)
                     ProgressDialog.dismissProgress()
                     Log.d("requessssst", "onResponse: ${response.body()!!.results!!}")
                     adapter.notifyDataSetChanged()
@@ -188,13 +188,7 @@ class DetailsFragment : Fragment() , View.OnTouchListener,View.OnScrollChangeLis
         super.onDetach()
     }
 
-    override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-        return false
-    }
 
-    override fun onScrollChange(p0: View?, p1: Int, p2: Int, p3: Int, p4: Int) {
-
-    }
 
 
 }
