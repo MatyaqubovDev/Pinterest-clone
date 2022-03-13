@@ -1,24 +1,24 @@
 package dev.matyaqubov.pinterest.ui.fragment
 
+import android.Manifest
 import android.app.Activity
+import android.content.ContentValues
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import dev.matyaqubov.pinterest.R
 import dev.matyaqubov.pinterest.adapter.SearchPhotosAdapter
@@ -29,7 +29,27 @@ import dev.matyaqubov.pinterest.service.model.SearchResultsItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.concurrent.fixedRateTimer
+
+import androidx.core.app.ActivityCompat
+
+import android.os.Environment
+import java.io.File
+import dev.matyaqubov.pinterest.ui.activity.MainActivity
+
+import android.graphics.drawable.Drawable
+
+import android.graphics.drawable.BitmapDrawable
+
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import androidx.annotation.Nullable
+
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 
 class DetailsFragment : Fragment() {
@@ -46,8 +66,10 @@ class DetailsFragment : Fragment() {
     private lateinit var iv_profile: ImageView
     private lateinit var iv_comment_profile: ImageView
     private lateinit var iv_share: ImageView
+    private lateinit var l_download:LottieAnimationView
     private lateinit var recyclerView: RecyclerView
     private var word: String = ""
+
     private var photo: SearchResultsItem? = null
     private lateinit var adapter: SearchPhotosAdapter
     private lateinit var manager: StaggeredGridLayoutManager
@@ -70,6 +92,7 @@ class DetailsFragment : Fragment() {
         recyclerView.isNestedScrollingEnabled = false
         iv_profile = view.findViewById(R.id.iv_profile)
         tv_username = view.findViewById(R.id.tv_username)
+        l_download=view.findViewById(R.id.l_download)
         tv_comment_username = view.findViewById(R.id.tv_comment_username)
         tv_followers = view.findViewById(R.id.tv_followers)
         tv_describtion = view.findViewById(R.id.tv_describtion)
@@ -107,8 +130,108 @@ class DetailsFragment : Fragment() {
         }
 
 
+        l_download.setOnClickListener {
+
+            downloading(photo!!.links!!.download)
+        }
+
+
         return view
     }
+
+    private fun downloading(imageURL: String?) {
+       if (!verifyPermissions()){
+           downloading(imageURL)
+       }
+
+        val fileName: String = photo!!.id!!
+        l_download.playAnimation()
+        Glide.with(this)
+            .load(imageURL)
+            .into(object : CustomTarget<Drawable?>() {
+
+                override fun onResourceReady(
+                    resource: Drawable,
+                    @Nullable transition: Transition<in Drawable?>?
+                ) {
+                    val bitmap = (resource as BitmapDrawable).bitmap
+
+                    saveImage(bitmap, fileName)
+                }
+
+                override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
+                override fun onLoadFailed(@Nullable errorDrawable: Drawable?) {
+                    super.onLoadFailed(errorDrawable)
+
+                }
+            })
+
+
+    }
+
+    private fun saveImage(image: Bitmap, imageFileName: String) {
+
+
+        //Generating a file name
+        val filename = "${imageFileName}.jpg"
+
+        //Output stream
+        var fos: OutputStream? = null
+
+//        For devices running android >= Q
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            //getting the contentResolver
+            context?.contentResolver?.also { resolver ->
+
+                //Content resolver will process the contentvalues
+                val contentValues = ContentValues().apply {
+
+                    //putting file information in content values
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                    put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                }
+
+                //Inserting the contentValues to contentResolver and getting the Uri
+                val imageUri: Uri? =
+                    resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+                //Opening an outputstream with the Uri that we got
+                fos = imageUri?.let { resolver.openOutputStream(it) }
+            }
+        } else {
+            //These for devices running on android < Q
+            //So I don't think an explanation is needed here
+            val imagesDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+            val image = File(imagesDir, filename)
+            fos = FileOutputStream(image)
+        }
+
+        fos?.use {
+            //Finally writing the bitmap to the output stream that we opened
+            image.compress(Bitmap.CompressFormat.JPEG, 100, it)
+
+            Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    private fun verifyPermissions(): Boolean {
+        val permissionExternalMemory =
+            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+        if (permissionExternalMemory != PackageManager.PERMISSION_GRANTED) {
+            val STORAGE_PERMISSIONS = arrayOf<String>(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            // If permission not granted then ask for permission real time.
+            ActivityCompat.requestPermissions(requireActivity(), STORAGE_PERMISSIONS, 1)
+            return false
+        }
+
+        return true
+
+    }
+
     private fun setData() {
         Glide.with(iv_main.context).load(photo!!.urls!!.smallS3).error(R.mipmap.ic_launcher)
             .placeholder(ColorDrawable(Color.parseColor(photo!!.color))).into(iv_main)

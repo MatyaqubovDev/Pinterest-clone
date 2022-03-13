@@ -140,12 +140,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="15dp">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:layout_width="30dp"
+                            android:id="@+id/l_download"
+                            android:layout_height="30dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="15dp"
-                            android:src="@drawable/ic_download" />
+                            app:lottie_fileName="download.json" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"

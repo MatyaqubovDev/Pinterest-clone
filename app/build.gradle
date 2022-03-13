@@ -66,4 +66,6 @@ dependencies {
 
     implementation 'xyz.belvi.blurHash:blurHash:1.0.4'
 
+    implementation 'com.airbnb.android:lottie:5.0.3'
+
 }
