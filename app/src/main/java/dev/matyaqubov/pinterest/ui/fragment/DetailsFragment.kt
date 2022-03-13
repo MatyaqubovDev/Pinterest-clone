@@ -87,27 +87,17 @@ class DetailsFragment : Fragment() , View.OnTouchListener,View.OnScrollChangeLis
         searchPhoto(word)
 
 
-
-//        val scrollListener = object : EndlessRecyclerViewScrollListener(manager) {
-//            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-//                nestedScrollView.isNestedScrollingEnabled = false
-//                searchPhoto(word)
-//                Toast.makeText(context, "???", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//        recyclerView.addOnScrollListener(scrollListener)
-
-//
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-//                if (!recyclerView.canScrollVertically(1)) {
-
-                searchPhoto(word)
-                    Toast.makeText(context, "last", Toast.LENGTH_SHORT).show()
-//                }
+        //To achieve endless scrolling for recycler view which is under NestedScrollView,
+        // you can use "NestedScrollView.OnScrollChangeListener"
+//        Here v.getChildCount() -1 should give you the recycler view for which you be implementing endless scrolling.
+//Also scrollY > oldScrollY confirms that the page is being scrolled down.
+        nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v: NestedScrollView, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            if (v.getChildAt(v.childCount - 1) != null) {
+                if (scrollY >= v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight && scrollY > oldScrollY) {
+                    searchPhoto(word)
+                }
             }
-        })
+        } as NestedScrollView.OnScrollChangeListener)
 
         iv_back.setOnClickListener {
             requireActivity().onBackPressed()
