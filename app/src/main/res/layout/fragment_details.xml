@@ -38,14 +38,27 @@
                         android:background="@drawable/shape_layout_top_corner">
 
 
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:id="@+id/iv_main"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:adjustViewBounds="true"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/ic_launcher_background"
-                            app:shapeAppearanceOverlay="@style/topcorner" />
+                       <androidx.cardview.widget.CardView
+                           android:layout_width="match_parent"
+                           app:cardCornerRadius="30dp"
+                           android:layout_height="wrap_content">
+
+                           <com.jsibbold.zoomage.ZoomageView
+                               android:id="@+id/iv_main"
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:adjustViewBounds="true"
+                               android:scaleType="centerCrop"
+                               android:src="@drawable/ic_launcher_background"
+                               app:zoomage_animateOnReset="true"
+                               app:zoomage_autoCenter="true"
+                               app:zoomage_autoResetMode="UNDER"
+                               app:zoomage_maxScale="8"
+                               app:zoomage_minScale="0.6"
+                               app:zoomage_restrictBounds="false"
+                               app:zoomage_translatable="true"
+                               app:zoomage_zoomable="true"/>
+                       </androidx.cardview.widget.CardView>
 
                         <ImageView
                             android:layout_width="wrap_content"

@@ -79,4 +79,8 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
 
 
+    //Zoom Image
+    implementation 'com.jsibbold:zoomage:1.3.1'
+
+
 }
