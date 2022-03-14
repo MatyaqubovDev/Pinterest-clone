@@ -11,12 +11,14 @@ class MessageFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
-    : View? {
+    : View {
 
         return initViews(inflater.inflate(R.layout.fragment_message, container, false))
     }
 
     private fun initViews(view: View): View {
+
+
 
         return view
     }

@@ -31,23 +31,19 @@ import retrofit2.Callback
 import retrofit2.Response
 
 import androidx.core.app.ActivityCompat
-
 import android.os.Environment
 import java.io.File
-import dev.matyaqubov.pinterest.ui.activity.MainActivity
-
 import android.graphics.drawable.Drawable
-
 import android.graphics.drawable.BitmapDrawable
-
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.Nullable
-
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import dev.matyaqubov.pinterest.database.AppDatabase
+import dev.matyaqubov.pinterest.database.entitiy.Photos
 import java.io.FileOutputStream
 import java.io.OutputStream
 
@@ -69,7 +65,7 @@ class DetailsFragment : Fragment() {
     private lateinit var l_download:LottieAnimationView
     private lateinit var recyclerView: RecyclerView
     private var word: String = ""
-
+    lateinit var appDatabase: AppDatabase
     private var photo: SearchResultsItem? = null
     private lateinit var adapter: SearchPhotosAdapter
     private lateinit var manager: StaggeredGridLayoutManager
@@ -87,7 +83,7 @@ class DetailsFragment : Fragment() {
     }
 
     private fun initViews(view: View): View {
-
+        appDatabase= AppDatabase.getInstance(requireContext())
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.isNestedScrollingEnabled = false
         iv_profile = view.findViewById(R.id.iv_profile)
@@ -129,6 +125,9 @@ class DetailsFragment : Fragment() {
             sendData!!.sendPhoto(it, word, page)
         }
 
+        tv_save.setOnClickListener {
+            savetoData()
+        }
 
         l_download.setOnClickListener {
 
@@ -138,6 +137,12 @@ class DetailsFragment : Fragment() {
 
         return view
     }
+
+    private fun savetoData() {
+        var photos=Photos(photo!!.id,photo!!.color,photo!!.description.let { " " },photo!!.altDescription,photo!!.urls!!.thumb!!,word)
+        appDatabase.photoDao().savePhoto(photos )
+    }
+
 
     private fun downloading(imageURL: String?) {
        if (!verifyPermissions()){

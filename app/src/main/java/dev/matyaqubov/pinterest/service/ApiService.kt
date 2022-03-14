@@ -26,7 +26,7 @@ interface ApiService {
     
 
     @GET("photos/{id}")
-    fun getPhoto(@Path("id") id: String): Call<PhotosResponseItem>
+    fun getPhoto(@Path("id") id: String): Call<SearchResultsItem>
 
 
 }

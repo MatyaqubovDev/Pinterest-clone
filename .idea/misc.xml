@@ -7,6 +7,7 @@
         <entry key="app/src/main/res/drawable/edittext_corner.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_baseline_more_horiz_whte.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2203125" />
+        <entry key="app/src/main/res/drawable/ic_tune.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/ic_zoom.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/round_corner.xml" value="0.2203125" />
         <entry key="app/src/main/res/drawable/round_shape_gray.xml" value="0.2203125" />
@@ -14,8 +15,9 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/fragment_details.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.20416666666666666" />
+        <entry key="app/src/main/res/layout/fragment_item_list.xml" value="0.18958333333333333" />
         <entry key="app/src/main/res/layout/fragment_message.xml" value="0.20416666666666666" />
-        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.20416666666666666" />
+        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.10185185185185185" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/item_filter.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/item_home_photos.xml" value="0.20416666666666666" />
