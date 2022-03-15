@@ -141,6 +141,7 @@ class DetailsFragment : Fragment() {
     private fun savetoData() {
         var photos=Photos(photo!!.id,photo!!.color,photo!!.description.let { " " },photo!!.altDescription,photo!!.urls!!.thumb!!,word)
         appDatabase.photoDao().savePhoto(photos )
+        Toast.makeText(requireContext(), "saved", Toast.LENGTH_SHORT).show()
     }
 
 
@@ -217,7 +218,7 @@ class DetailsFragment : Fragment() {
             //Finally writing the bitmap to the output stream that we opened
             image.compress(Bitmap.CompressFormat.JPEG, 100, it)
 
-            Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Downloaded", Toast.LENGTH_SHORT).show()
         }
     }
 
