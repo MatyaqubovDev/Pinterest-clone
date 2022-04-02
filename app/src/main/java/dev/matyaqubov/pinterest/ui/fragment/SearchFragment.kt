@@ -148,7 +148,9 @@ class SearchFragment : Fragment() {
                     call: Call<Search>,
                     response: Response<Search>
                 ) {
-                    if(response.body()!=null) list.addAll(response.body()!!.results!!)
+                    if(response.body()!=null) {
+                        list.addAll(response.body()!!.results!!)
+                    }
                     ProgressDialog.dismissProgress()
                     Log.d("requessssst", "onResponse: ${response.body()!!.results!!}")
                     adapter.notifyDataSetChanged()
@@ -161,7 +163,7 @@ class SearchFragment : Fragment() {
                 }
 
             })
-        ProgressDialog.dismissProgress()
+        //ProgressDialog.dismissProgress()
 
     }
 

@@ -139,7 +139,7 @@ class DetailsFragment : Fragment() {
     }
 
     private fun savetoData() {
-        var photos=Photos(photo!!.id,photo!!.color,photo!!.description.let { " " },photo!!.altDescription,photo!!.urls!!.thumb!!,word)
+        var photos=Photos(photo!!.id,photo!!.color,photo!!.description.let { " " },photo!!.altDescription.let { " " },photo!!.urls!!.thumb!!,word)
         appDatabase.photoDao().savePhoto(photos )
         Toast.makeText(requireContext(), "Saved", Toast.LENGTH_SHORT).show()
     }
