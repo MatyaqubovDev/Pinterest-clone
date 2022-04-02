@@ -149,9 +149,9 @@ class SearchFragment : Fragment() {
                     response: Response<Search>
                 ) {
                     if(response.body()!=null) list.addAll(response.body()!!.results!!)
+                    ProgressDialog.dismissProgress()
                     Log.d("requessssst", "onResponse: ${response.body()!!.results!!}")
                     adapter.notifyDataSetChanged()
-                    ProgressDialog.dismissProgress()
                 }
 
                 override fun onFailure(call: Call<Search>, t: Throwable) {
@@ -161,6 +161,7 @@ class SearchFragment : Fragment() {
                 }
 
             })
+        ProgressDialog.dismissProgress()
 
     }
 

@@ -44,7 +44,7 @@ class SearchAdapter(var items:ArrayList<Home>): RecyclerView.Adapter<RecyclerVie
         return items.size
     }
 
-    @SuppressLint("CutPasteId")
+
     class SearchViewHolder(view: View):RecyclerView.ViewHolder(view){
         var tv_title: TextView
         var iv_photo: ShapeableImageView
